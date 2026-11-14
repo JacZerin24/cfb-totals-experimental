@@ -16,7 +16,7 @@ Read the [comprehensive research plan](RESEARCH_PLAN.md). It defines the project
 ## Guiding principle
 A 50%+ annual ROI with many playable bets is an **aspirational stress-test**, not a promise. At -110, that would require about a 78.6% win rate. The system will prioritize honest, point-in-time, executable out-of-sample performance rather than optimized backtests.
 
-**Phase 0 checkpoint:** [Read current verified findings and outstanding blockers](reports/00_phase0_checkpoint.md).\n\n## Research workstreams
+**Phase 0 progress:** [Original training artifact audit](reports/00_phase0_training_data_audit.md) and [executed historical weather ablation](reports/00_phase0_weather_ablation.md). The training dataset has been recovered, but exact environment replication and historical executable odds are still outstanding. [Earlier parlay checkpoint](reports/00_phase0_checkpoint.md).\n\n## Research workstreams
 1. Data lineage and independent reproduction.
 2. Historical-to-2026 calibration and extreme-miss diagnosis.
 3. Market-first and probabilistic possession-based totals models.
@@ -24,4 +24,4 @@ A 50%+ annual ROI with many playable bets is an **aspirational stress-test**, no
 5. Weather-by-matchup interaction models.
 6. Strict walk-forward validation, bookmaker price realism, and prospective shadow tracking.
 
-**Next blocker:** obtain and verify historical training data and timestamped odds so imported legacy experiments can be reproduced without look-ahead.
+**Next blockers:** reproduce historical results with the source's pinned scikit-learn environment and acquire historical timestamped sportsbook quotes and archived pregame forecasts. The historical training artifact is recovered and independently audited.
