@@ -1,0 +1,85 @@
+protocol_version: "2026.6"
+season: 2026
+frozen_at_utc: "2026-08-28T00:38:00Z"
+revision_effective_at_utc: "2026-09-22T12:00:00Z"
+supersedes: "2026.5"
+revision_scope: "Prospective model-integrity correction. Explicitly pins HistGradientBoostingRegressor early_stopping=False after the prior sklearn auto setting changed training behavior when the historical sample crossed 10,000 rows. A walk-forward audit using only historical data through 2025 selected a 4.0-point GENERAL HGB UNDER qualifier edge with the existing 56+ total floor. FCS rules, official-entry timing, closing-benchmark selection, grading economics, and card logic are unchanged. Prior immutable entries remain governed by the protocol/version and status recorded at capture time."
+purpose: "Prospective paper validation of the frozen 2026 CFB totals research rules."
+
+rules:
+  general:
+    model_track: "GENERAL HGB"
+    direction: "under"
+    qualify_edge_points: 4.0
+    minimum_total: 56.0
+  fcs:
+    model_track: "FCS-only HGB"
+    direction: "under"
+    qualify_edge_points: 7.5
+    minimum_total: 56.0
+
+official_entry_policy:
+  eligible_event_name: "schedule"
+  eligible_crons:
+    - "17 10 * * 4,5"
+    - "17 11 * * 4,5"
+    - "17 13 * * 4,5"
+    - "17 14 * * 4,5"
+    - "17 6 * * 6"
+    - "17 7 * * 6"
+    - "17 11 * 11 2,3"
+    - "17 14 * 11 2,3"
+  minimum_lead_minutes: 120
+  selection: "For each game, use the latest successful eligible scheduled snapshot at least 120 minutes before kickoff. Thursday/Friday retain the 5:17 and 8:17 AM Central snapshots. Saturday uses the single 1:17 AM Central production build. Beginning prospectively with protocol 2026.5, November Tuesday/Wednesday games also receive 5:17 and 8:17 AM Central snapshots before the first declared midweek slate occurs. The active CDT/CST expression is selected by the workflow's America/Chicago gate; November midweek expressions are CST-only. For duplicate attempts of the same GitHub run, retain the earliest successful attempt. Manual, push-triggered, postseason-only operational refreshes, and watchdog-dispatched refreshes are archived but are never official entries."
+
+schedule_reliability:
+  timezone: "America/Chicago"
+  monday_early_look_local: "05:17"
+  thursday_friday_safety_local: "05:17"
+  thursday_friday_freshness_local: "08:17"
+  saturday_full_build_local: "01:17"
+  november_tuesday_wednesday_safety_local: "05:17"
+  november_tuesday_wednesday_freshness_local: "08:17"
+  saturday_watchdog_local: "06:47"
+  watchdog_policy: "Monday, Thursday, and Friday are checked 30 minutes after the 5:17 AM safety build. November Tuesday/Wednesday midweek builds are checked 30 minutes after 5:17 AM. Saturday is checked at 6:47 AM Central against the 1:17 AM full build. One workflow-dispatch backup is launched only if no successful required build exists. Watchdog backups refresh operations but remain ineligible for official prospective entry."
+
+closing_benchmark_policy:
+  capture_event_name: "schedule"
+  capture_crons:
+    - "15,45 14-23 * * 4,5,6,0,1"
+    - "15,45 0-5 * * 5,6,0,1,2"
+    - "15,45 14-23 * 11 2,3"
+    - "15,45 0-5 * 11 3,4"
+  capture_window_minutes: 90
+  preflight_window_minutes: 105
+  allow_manual_capture: false
+  allow_rerun_backfill: false
+  selection: "Use the latest immutable first-attempt scheduled market capture before kickoff and within the 90-minute capture window. Beginning with protocol 2026.2, the capture workflow attempts twice per hour to reduce missed benchmarks caused by delayed GitHub scheduled jobs. Protocol 2026.5 adds November Tuesday/Wednesday coverage and a repository-only preflight gate: when no locally tracked game is within 105 minutes, the scheduled tick exits without spending CFBD or odds requests; the authoritative capture routine still re-checks current CFBD kickoff times before any immutable file is written. Prefer the median total across available books; if a median is unavailable, use the selected current total. Missing captures stay missing and are not manually backfilled."
+  clv_definition: "For an under, CLV points = entry total minus benchmark close total. Positive is favorable. For an over, CLV points = benchmark close total minus entry total."
+
+paper_grading:
+  price: -110
+  qualifying_status: "QUALIFIES"
+  unit_stake: 1.0
+  win_profit_units: 0.9090909091
+  loss_profit_units: -1.0
+  push_profit_units: 0.0
+  postgame_grade_crons:
+    - "0 12 * * 0,1,2"
+    - "0 12 * 11 3,4"
+  timing_note: "Derived grades are rebuilt on normal postgame mornings, on November Wednesday/Thursday mornings after midweek slates, explicit derived-only rebuilds, or scheduled pregame model runs. Only games explicitly marked completed by CFBD are eligible for normal settlement."
+
+data_integrity_corrections:
+  official_entry_eligibility_overrides:
+    - github_run_id: "33961120017"
+      github_event_name: "schedule"
+      github_event_schedule: "17 6 * * 6"
+      reason: "The Sep. 5, 2026 1:17 AM CDT production run was the intentionally deployed Saturday schedule, but its immutable snapshots were stamped ineligible because protocol 2026.3 still listed the superseded Saturday cron set. The entire run is restored as eligible without editing its immutable snapshot."
+  grading_exclusions:
+    - game_id: 401866625
+      disposition: "POSTPONED / STALE"
+      reason: "Western Carolina at Campbell was postponed from its original Saturday kickoff. The original prospective qualifier remains preserved, but the event changed kickoff/weather context and must not be settled, counted in units/ROI, or assigned CLV from the stale market snapshot."
+
+freeze_policy:
+  description: "Do not tune production thresholds or retrospectively alter official-entry selection based on 2026 outcomes before the declared review point. Protocol 2026.6 is a prospective, evidence-backed software/model-integrity correction: the sklearn early-stopping default changed the HGB training regime solely because the historical training sample crossed 10,000 rows. The replacement 4.0/56 GENERAL HGB screen was selected from walk-forward historical data through 2025 without using 2026 outcomes. Prior immutable snapshots and grades are not reclassified. The existing Sep. 5 metadata correction and postponed-game exclusion remain narrowly documented integrity fixes tied to preserved immutable evidence. Any future protocol change must receive a new protocol_version and applies prospectively unless it is a narrowly documented metadata/integrity correction tied to preserved immutable evidence."
+  review_point: "After the 2026 regular season unless a data-integrity bug requires a documented correction."
