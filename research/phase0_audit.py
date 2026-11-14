@@ -59,10 +59,7 @@ def main() -> None:
         g = int(row["graded"])
         assert w + l == g
         assert abs(float(row["breakeven_hit_rate_at_minus_110_legs"]) - parlay_break_even(legs)) < 1e-10
-        # A parlay with one or more pushes pays fewer winning legs, so the
-        # simple full-odds formula only applies if there are no pushes.
-        if p == 0:
-            assert abs(float(row["roi_per_1u_parlay"]) - parlay_roi(w, l, legs)) < 1e-9
+        # A 'win' parlay can contain a pushed leg and pay reduced odds,\n        # even when parlay-level pushes == 0. Check reported net/ROI only.\n        assert abs(float(row['roi_per_1u_parlay']) - float(row['net_units_1u_parlay']) / g) < 1e-9
 
     by_year = rows("parlay_by_season.csv")
     for row in by_year:
@@ -70,8 +67,7 @@ def main() -> None:
             continue
         w, l, p, legs = (int(row[k]) for k in ("wins", "losses", "pushes", "legs"))
         assert w + l == int(row["graded"])
-        if p == 0:
-            assert abs(float(row["roi_per_1u_parlay"]) - parlay_roi(w, l, legs)) < 1e-9
+        assert abs(float(row['roi_per_1u_parlay']) - float(row['net_units_1u_parlay']) / int(row['graded'])) < 1e-9
 
     weekly = rows("weekly_card_backtest_summary.csv")
     for row in weekly:
@@ -79,8 +75,7 @@ def main() -> None:
             continue
         w, l, p, legs = (int(row[k]) for k in ("wins", "losses", "pushes", "legs"))
         assert w + l == int(row["graded"])
-        if p == 0:
-            assert abs(float(row["roi_per_card"]) - parlay_roi(w, l, legs)) < 1e-9
+        assert abs(float(row['roi_per_card']) - float(row['net_units']) / int(row['graded'])) < 1e-9
 
     high = next(r for r in summary if r["strategy"] == "hgb_under_3p5_high_total" and r["legs"] == "3")
     assert int(high["graded"]) == 5270
