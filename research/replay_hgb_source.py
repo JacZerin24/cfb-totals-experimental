@@ -45,6 +45,7 @@ def run(dataset: Path, output: Path):
     df = prep(pd.read_csv(dataset, low_memory=False))
     nums, cats = feature_lists(df)
     df = prep_features(df, cats)
+    output.parent.mkdir(parents=True, exist_ok=True)
     results = []
     for regime in ("source_exact", "no_observed_weather"):
         ns = nums if regime == "source_exact" else [c for c in nums if c not in WEATHER_NUM]
