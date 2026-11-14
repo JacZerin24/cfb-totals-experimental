@@ -35,7 +35,7 @@ Discover, validate, and monitor **repeatable positive expected value** in colleg
 - **Team totals:** separately test home/away team total markets and asymmetric pricing; availability, vig, correlated outcomes, and liquidity must be measured.
 - **FCS specialist:** account for sparse data, mismatched opponents, venue, low-liquidity odds and delayed injury/roster data; compare with FBS.
 - **Weather interactions:** wind * pass rate / air yards, gust direction relative to field, rain intensity, wet-bulb/heat, surface, dome/roof, storm uncertainty; only point-in-time forecasts, not realized weather as a betting feature.
-- **Opportunity detection:** independent quote-level opportunities across books, limits, time-to-kickoff, bookmaker disagreement, and price execution; do not assume displayed odds are fillable.
+- **Opportunity detection:** independent quote-level opportunities across books, limits, time-to-kickoff, bookmaker disagreement, and price execution; do not assume displayed odds are fillable.\n- **Parlay portfolio research:** compare straight wagers with two-/three-leg and mixed portfolios using actual book prices, leg-level pushes, capped tickets per week, correlated outcomes, per-week exposure and capacity. Treat historical all-combinations ROI as descriptive only, not independently executable returns.
 **Gate:** Each challenger must beat market-only and existing HGB baselines on calibration and out-of-sample expected value, not just fitted ROI.
 
 ### Phase 3 — Strict validation
@@ -54,7 +54,7 @@ Discover, validate, and monitor **repeatable positive expected value** in colleg
 - No auto-betting, stake recommendations, or live deployment without separate explicit approval.
 
 ## Research scorecard and portfolio controls
-Primary: **net realized ROI at actually available odds**, per-season and pooled, with confidence bounds; **positive expected value net of vig**, and out-of-sample calibration. Secondary: number of qualified bets, positive seasons, CLV, max drawdown, market coverage, execution fill rate, correlation among bets, and capacity under limits. Track FBS totals, FCS totals, and team totals separately before combining; avoid falsely multiplying independent bet counts. An ambitious 50% ROI should be displayed as a stretch benchmark only. A model with 50% historical ROI but fragile validation **fails**.
+Primary: **net realized ROI at actually available odds**, per-season and pooled, with confidence bounds; **positive expected value net of vig**, and out-of-sample calibration. Secondary: number of qualified bets, positive seasons, CLV, max drawdown, market coverage, execution fill rate, correlation among bets, and capacity under limits. Track FBS totals, FCS totals, team totals, and parlay portfolios separately before combining; avoid falsely multiplying independent bet counts or overlapping parlay tickets. An ambitious 50% ROI should be displayed as a stretch benchmark only. A model with 50% historical ROI but fragile validation **fails**.
 
 ## Milestone deliverables
 - M0: `reports/00_data_provenance.md` and verified reproducibility package.
