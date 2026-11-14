@@ -16,7 +16,7 @@ Read the [comprehensive research plan](RESEARCH_PLAN.md). It defines the project
 ## Guiding principle
 A 50%+ annual ROI with many playable bets is an **aspirational stress-test**, not a promise. At -110, that would require about a 78.6% win rate. The system will prioritize honest, point-in-time, executable out-of-sample performance rather than optimized backtests.
 
-**Latest checkpoint:** [Executed market coverage audit and parlay ticket validation infrastructure](reports/00_phase0_checkpoint_5.md). The original training data lacks quote timestamps and actual under/over prices; exact pinned-environment HGB replay is still pending.\n\n**Phase 0 progress:** [Original training artifact audit](reports/00_phase0_training_data_audit.md) and [executed historical weather ablation](reports/00_phase0_weather_ablation.md). The training dataset has been recovered, but exact environment replication and historical executable odds are still outstanding. [Earlier parlay checkpoint](reports/00_phase0_checkpoint.md).\n\n## Research workstreams
+**Latest checkpoint:** [Successful pinned-environment reproduction](reports/00_phase0_pinned_reproduction.md) — original HGB aggregate 376–267–8 / +11.64% ROI reproduced exactly; no-observed-weather HGB 424–315–13 / +9.53% ROI. [GitHub Actions verification](https://github.com/JacZerin24/cfb-totals-experimental/actions/runs/43639836744) passed all steps and nine synthetic tests. **Historical quote-level profitability remains unverified.**\n\n**Phase 0 progress:** [Original training artifact audit](reports/00_phase0_training_data_audit.md) and [executed historical weather ablation](reports/00_phase0_weather_ablation.md). The training dataset has been recovered, but exact environment replication and historical executable odds are still outstanding. [Earlier parlay checkpoint](reports/00_phase0_checkpoint.md).\n\n## Research workstreams
 1. Data lineage and independent reproduction.
 2. Historical-to-2026 calibration and extreme-miss diagnosis.
 3. Market-first and probabilistic possession-based totals models.
@@ -24,4 +24,4 @@ A 50%+ annual ROI with many playable bets is an **aspirational stress-test**, no
 5. Weather-by-matchup interaction models.
 6. Strict walk-forward validation, bookmaker price realism, and prospective shadow tracking.
 
-**Next blockers:** reproduce historical results under the source's pinned scikit-learn environment; verify source feature timing and provider-era sensitivity; acquire timestamped sportsbook quotes and archived pregame forecasts. A strict parlay-ticket settlement engine is committed, but historical executable ticket-level data is not available.
+**Next blockers:** verify source feature timing and provider-era sensitivity; acquire timestamped sportsbook quotes and archived pregame forecasts. The pinned-environment aggregate reproduction is complete, but historical executable parlay tickets and prices are not available.
