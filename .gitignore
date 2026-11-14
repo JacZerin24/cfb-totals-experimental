@@ -1,0 +1,11 @@
+# Local licensed or large historical artifacts
+data/external/
+data/raw/
+data/processed/
+*.zip
+.env
+.env.*
+__pycache__/
+.pytest_cache/
+*.pyc
+reports/generated_*.json
