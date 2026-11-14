@@ -10,7 +10,7 @@ As of Nov 14, original `outputs/prospective/2026` official summary: 28 qualifier
 **General HGB**: September 22 2026 successful audit run [35725584192](https://github.com/JacZerin24/cfb-weather-totals/actions/runs/35725584192), `early_stopping=False`, FBS-vs-FBS under, edge >=4, total >=56:
 - 2016–2025: 651 selected; 643 graded, 376–267 with 8 pushes; 58.48% win rate and +11.64% flat-stake ROI.
 - 2022–2025: 174 selected; 172 graded, 106–66 with 2 pushes; 61.63% win rate and +17.65% ROI.
-- 2025: 29–? actually 16–13 on 29 graded; 55.17% and +5.33% ROI.
+- 2025: 16–13 on 29 graded; 55.17% and +5.33% ROI.
 The FBS 2026 6–6 result is not a statistically significant deviation from the historical 58.48% rate; 12 plays cannot distinguish regime change from chance. Note historical selection uses historical `closing_total`, so it is **not necessarily a bettable early-line benchmark**.
 **FCS-only HGB**: 2023–2025 selected-screen-by-season archive, edge >=7.5, total >=56, FCS-vs-FCS. 2023 8–7, 2024 17–14, 2025 16–11; combined 41–32, 56.16%, ~+7.22% ROI. Live 2026 7–5 is consistent with historical.
 **Caution:** 2025 and 2026 have been repeatedly inspected during prior development, so they cannot be retroactively treated as pristine model-selection holdouts.
