@@ -1,0 +1,66 @@
+name: Phase 0 reproducibility audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/phase0-repro.yml'
+jobs:
+  phase0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    permissions:
+      contents: read
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: reference/legacy/requirements.txt
+      - name: Install exact source requirements
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r reference/legacy/requirements.txt
+          python -m pip freeze | tee phase0_environment.txt
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Recover source Actions training artifact
+        run: |
+          mkdir -p data/external/cfb-live-training-data
+          gh run download 43613392785 -R JacZerin24/cfb-weather-totals --name cfb-live-training-data --dir data/external/cfb-live-training-data
+          test -s data/external/cfb-live-training-data/modeling_dataset.csv
+      - name: Verify artifact provenance and market coverage
+        run: |
+          python research/audit_training_artifact.py data/external/cfb-live-training-data/modeling_dataset.csv --output reports/generated_training_data_audit.json
+          python research/audit_point_in_time.py data/external/cfb-live-training-data/modeling_dataset.csv --output reports/generated_point_in_time_audit.json
+          python research/audit_market_coverage.py data/external/cfb-live-training-data/modeling_dataset.csv --output reports/generated_market_coverage.json
+      - name: Replay original model and weather ablation
+        run: python research/replay_hgb_source.py data/external/cfb-live-training-data/modeling_dataset.csv
+      - name: Compare published benchmark
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          x = pd.read_csv('reports/generated_source_replay.csv')
+          a = x[x.regime.eq('source_exact')]
+          sums = {c:int(a[c].sum()) for c in ('games','graded','wins','losses','pushes')}
+          print('Source replay:', sums)
+          expected = dict(games=651,graded=643,wins=376,losses=267,pushes=8)
+          if sums != expected:
+              print('REPLICATION MISMATCH:', {k:(sums[k],v) for k,v in expected.items() if sums[k]!=v})
+          else:
+              print('REPLICATION MATCH')
+          PY
+      - name: Upload diagnostic reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase0-repro-results
+          path: |
+            reports/generated_*.csv
+            reports/generated_*.json
+            phase0_environment.txt
+          if-no-files-found: warn
+          retention-days: 30
