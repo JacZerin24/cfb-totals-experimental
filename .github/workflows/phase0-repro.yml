@@ -42,7 +42,9 @@ jobs:
           python research/audit_market_coverage.py data/external/cfb-live-training-data/modeling_dataset.csv --output reports/generated_market_coverage.json
       - name: Replay original model and weather ablation
         run: python research/replay_hgb_source.py data/external/cfb-live-training-data/modeling_dataset.csv
-      - name: Provider and missingness robustness\n        run: python research/sensitivity_hgb.py data/external/cfb-live-training-data/modeling_dataset.csv\n      - name: Compare published benchmark
+      - name: Provider and missingness robustness
+        run: python research/sensitivity_hgb.py data/external/cfb-live-training-data/modeling_dataset.csv
+      - name: Compare published benchmark
         run: |
           python - <<'PY'
           import pandas as pd
