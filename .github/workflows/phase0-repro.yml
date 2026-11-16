@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/phase0-repro.yml'
+      - '.github/workflows/phase0-repro.yml'\n      - 'research/sensitivity_hgb.py'\n      - 'research/archive_odds.py'\n      - 'tests/**'
 jobs:
   phase0:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
           python research/audit_market_coverage.py data/external/cfb-live-training-data/modeling_dataset.csv --output reports/generated_market_coverage.json
       - name: Replay original model and weather ablation
         run: python research/replay_hgb_source.py data/external/cfb-live-training-data/modeling_dataset.csv
-      - name: Compare published benchmark
+      - name: Provider and missingness robustness\n        run: python research/sensitivity_hgb.py data/external/cfb-live-training-data/modeling_dataset.csv\n      - name: Compare published benchmark
         run: |
           python - <<'PY'
           import pandas as pd
