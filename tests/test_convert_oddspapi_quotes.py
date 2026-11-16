@@ -6,7 +6,9 @@ from convert_oddspapi_quotes import convert
 class AdapterTests(unittest.TestCase):
     def setUp(self):
         self.catalog=[{"marketId":"m1","marketType":"totals","period":"result","marketName":"Total (incl. overtime)","handicap":56.5}]
-        self.fixture=[{"fixtureId":"f1","startTime":"2026-11-21T20:00:00Z","participant1Name":"A","participant2Name":"B","bookmakerOdds":{"bet365":{"markets":{"m1":{"marketActive":True,"outcomes":{"over":{"players":{"0":{"active":True,"price":-110}}},"under":{"players":{"0":{"active":True,"price":-115}}}}}}}}}}]
+        outcomes={"over":{"players":{"0":{"active":True,"price":-110}}},"under":{"players":{"0":{"active":True,"price":-115}}}}
+        market={"marketActive":True,"outcomes":outcomes}
+        self.fixture=[{"fixtureId":"f1","startTime":"2026-11-21T20:00:00Z","participant1Name":"A","participant2Name":"B","bookmakerOdds":{"bet365":{"markets":{"m1":market}}}}]
     def test_two_sides(self):
         rows,stats=convert(self.catalog,self.fixture,"2026-11-21T15:00:00Z")
         self.assertEqual(len(rows),2)
