@@ -3,7 +3,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - '.github/workflows/phase0-repro.yml'\n      - 'research/sensitivity_hgb.py'\n      - 'research/archive_odds.py'\n      - 'tests/**'
+      - '.github/workflows/phase0-repro.yml'
+      - 'research/sensitivity_hgb.py'
+      - 'research/archive_odds.py'
+      - 'tests/**'
 jobs:
   phase0:
     runs-on: ubuntu-latest
