@@ -1,5 +1,8 @@
 name: Experimental prospective OddsPapi quotes
 on:
+  push:
+    paths:
+      - '.github/workflows/experimental-odds-capture.yml'
   workflow_dispatch:
   schedule:
     # Thu/Fri/Sat Central daytime snapshots, UTC-based; non-betting research only.
