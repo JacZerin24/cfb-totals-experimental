@@ -85,9 +85,6 @@ def main():
     except RuntimeError as e:
         print("ODDSPAPI_CAPTURE=unavailable; "+str(e))
         return
-    secret=os.getenv("ODDS_ARCHIVE_ENCRYPTION_KEY","").strip()
-    if not secret:
-        print("ODDSPAPI_CAPTURE=skipped_missing_archive_encryption_key");return
     inserted=append_encrypted(rows,a.output_dir,secret)
     # Counts only: no raw provider data, secret, or price values in CI logs.
     print("ODDSPAPI_CAPTURE="+json.dumps(dict(stats,inserted=inserted),sort_keys=True))
