@@ -77,6 +77,9 @@ def main():
     key=os.getenv("ODDSPAPI_API_KEY","").strip()
     if not key:
         print("ODDSPAPI_CAPTURE=skipped_missing_secret");return
+    secret=os.getenv("ODDS_ARCHIVE_ENCRYPTION_KEY","").strip()
+    if not secret:
+        print("ODDSPAPI_CAPTURE=skipped_missing_archive_encryption_key");return
     try:
         rows,stats=capture(key)
     except RuntimeError as e:
