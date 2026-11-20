@@ -1,0 +1,41 @@
+name: Experimental prospective OddsPapi quotes
+on:
+  workflow_dispatch:
+  schedule:
+    # Thu/Fri/Sat Central daytime snapshots, UTC-based; non-betting research only.
+    - cron: '13 15,21 * * 4,5,6'
+permissions:
+  contents: write
+concurrency:
+  group: experimental-odds-archive
+  cancel-in-progress: false
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run offline adapter and archive tests
+        run: python -m unittest discover -s tests -p 'test_*odds*.py' -v
+      - name: Capture only authorized live OddsPapi quotes
+        env:
+          ODDSPAPI_API_KEY: ${{ secrets.ODDSPAPI_API_KEY }}
+        run: python research/capture_oddspapi.py
+      - name: Commit new timestamped quotes only
+        run: |
+          set -euo pipefail
+          git add data/prospective/oddspapi/
+          if git diff --cached --quiet; then
+            echo "No valid new quotes; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Archive observed experimental sportsbook quotes"
+          git pull --rebase origin main
+          git push origin HEAD:main
