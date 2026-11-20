@@ -29,6 +29,7 @@ jobs:
       - name: Commit new timestamped quotes only
         run: |
           set -euo pipefail
+          mkdir -p data/prospective/oddspapi
           git add data/prospective/oddspapi/
           if git diff --cached --quiet; then
             echo "No valid new quotes; nothing to commit."
