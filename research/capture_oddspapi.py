@@ -41,25 +41,33 @@ def capture(key,now=None,bookmakers=None):
     stats["quota_remaining_before_market_calls"]=remaining
     return rows,stats
 
-def append_day(rows,root):
+def append_encrypted(rows,root,secret):
+    """Encrypt complete append-only daily CSV; public repo never receives plaintext."""
+    import base64,hashlib,secrets,io
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    key=hashlib.sha256(secret.encode("utf-8")).digest()
+    aes=AESGCM(key)
     by_day={}
-    for row in rows:
-        day=row["observed_utc"][:10]
-        by_day.setdefault(day,[]).append(row)
+    for row in rows:by_day.setdefault(row["observed_utc"][:10],[]).append(row)
     inserted=0
     for day,new in by_day.items():
-        path=root/(day+".csv")
+        path=root/(day+".enc")
         path.parent.mkdir(parents=True,exist_ok=True)
         existing=[]
         if path.exists():
-            with path.open(newline="",encoding="utf-8") as f:existing=list(csv.DictReader(f))
-        key=lambda x:tuple(x.get(c,"") for c in ALL)
-        seen={key(x) for x in existing}
+            blob=base64.b64decode(path.read_bytes())
+            plaintext=aes.decrypt(blob[:12],blob[12:],day.encode("ascii")).decode("utf-8")
+            existing=list(csv.DictReader(io.StringIO(plaintext)))
+        identity=lambda x:tuple(x.get(c,"") for c in ALL)
+        seen={identity(x) for x in existing}
         for row in new:
-            if key(row) not in seen:
-                existing.append(row);seen.add(key(row));inserted+=1
-        with path.open("w",newline="",encoding="utf-8") as f:
-            writer=csv.DictWriter(f,fieldnames=ALL);writer.writeheader();writer.writerows(existing)
+            if identity(row) not in seen:
+                existing.append(row);seen.add(identity(row));inserted+=1
+        stream=io.StringIO()
+        writer=csv.DictWriter(stream,fieldnames=ALL);writer.writeheader();writer.writerows(existing)
+        nonce=secrets.token_bytes(12)
+        ciphertext=aes.encrypt(nonce,stream.getvalue().encode("utf-8"),day.encode("ascii"))
+        path.write_bytes(base64.b64encode(nonce+ciphertext))
     return inserted
 
 def main():
@@ -74,7 +82,7 @@ def main():
     except RuntimeError as e:
         print("ODDSPAPI_CAPTURE=unavailable; "+str(e))
         return
-    inserted=append_day(rows,a.output_dir)
+    secret=os.getenv("ODDS_ARCHIVE_ENCRYPTION_KEY","").strip()\n    if not secret:\n        print("ODDSPAPI_CAPTURE=skipped_missing_archive_encryption_key");return\n    inserted=append_encrypted(rows,a.output_dir,secret)
     # Counts only: no raw provider data, secret, or price values in CI logs.
     print("ODDSPAPI_CAPTURE="+json.dumps(dict(stats,inserted=inserted),sort_keys=True))
     if not rows:print("ODDSPAPI_CAPTURE_WARNING=no_unambiguous_quotes; no data appended")
